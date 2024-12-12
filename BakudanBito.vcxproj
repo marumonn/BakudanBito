@@ -144,10 +144,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Array2D.h" />
+    <ClCompile Include="Sequence\Parent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Clear.h" />
-    <ClInclude Include="Game\Parent.h" />
+    <ClInclude Include="Sequence\Ending.h" />
+    <ClInclude Include="Sequence\GameOver.h" />
+    <ClInclude Include="Sequence\Game\Parent.h" />
+    <ClInclude Include="Sequence\Parent.h" />
+    <ClInclude Include="Sequence\Title.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
