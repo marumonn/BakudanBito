@@ -1,8 +1,8 @@
-#ifndef INCLUDED_SEQUENCE_GAME_OVER_H
+﻿#ifndef INCLUDED_SEQUENCE_GAME_OVER_H
 #define INCLUDED_SEQUENCE_GAME_OVER_H
 
 class Image;
-
+//ゲームオーバー
 namespace Sequence {
 	class Parent;
 	

@@ -1,4 +1,4 @@
-#ifndef INCLUDED_SEQUENCE_TITLE_H
+ï»¿#ifndef INCLUDED_SEQUENCE_TITLE_H
 #define INCLUDED_SEQUENCE_TITLE_H
 
 class Image;
@@ -12,7 +12,7 @@ namespace Sequence {
 		~Title();
 		void update(Parent*);
 	private:
-		Image* mImage; //ƒ^ƒCƒgƒ‹‰æ–Ê‰æ‘œ
+		Image* mImage; //ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ã®ç”»åƒ
 		int mCursorPosition;
 	};
 }// namespace Sequence

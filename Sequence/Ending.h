@@ -1,8 +1,8 @@
-#ifndef INCLUDE_SEQUENCE_ENDING_H
+﻿#ifndef INCLUDE_SEQUENCE_ENDING_H
 #define INCLUDE_SEQUENCE_ENDING_H
 
 class Image;
-
+//エンディング
 namespace Sequence {
 	class Parent;
 

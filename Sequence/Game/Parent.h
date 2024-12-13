@@ -1,4 +1,4 @@
-#ifndef INCLUDED_SEQUENCE_GAME_PARENT_H
+ï»¿#ifndef INCLUDED_SEQUENCE_GAME_PARENT_H
 #define INCLUDED_SEQUENCE_GAME_PARENT_H
 
 class State;
@@ -23,7 +23,7 @@ namespace Sequence {
 				NEXT_PLAY,
 				NEXT_FAILURE,
 				NEXT_JUDGE,
-				//ˆÈ‰º‚Íã‚ÌŠK‘w‚Ö‚ÌƒV[ƒPƒ“ƒX
+				//ä»¥ä¸‹ã®ã‚­ãƒ¼ã¯ã€ä¸Šã®éšå±¤ã¸ã®ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ã‚’è¡¨ã™
 				NEXT_ENDING,
 				NEXT_GAME_OVER,
 				NEXT_TITLE,
@@ -42,8 +42,8 @@ namespace Sequence {
 
 			State* state();
 			//const
-			//‚±‚Ìƒƒ\ƒbƒh‚ªA‚±‚ÌƒNƒ‰ƒX‚Ìƒƒ“ƒo‚ğ•ÏX‚µ‚È‚¢‚±‚Æ‚ğ•ÛØ‚·‚é
-			bool hasFinalStageCleared() const; //ÅI–ÊƒNƒŠƒA‚µ‚½H
+			//ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ãŒã€ã“ã®ã‚¯ãƒ©ã‚¹ã®ãƒ¡ãƒ³ãƒã‚’å¤‰æ›´ã—ãªã„ã“ã¨ã‚’ä¿è¨¼ã™ã‚‹
+			bool hasFinalStageCleared() const; //æœ€çµ‚é¢ã‚¯ãƒªã‚¢ã—ãŸï¼Ÿ
 			int lifeNumber() const;
 			Mode mode() const;
 			void startLoading();
@@ -51,7 +51,7 @@ namespace Sequence {
 			State* mState;
 			int mStageID;
 			int mLife;
-			static const int FINAL_STAGE = 2; //¡‚Í2–Ê‚ªÅI–Ê
+			static const int FINAL_STAGE = 2; //ä»Šã¯2é¢ãŒæœ€çµ‚é¢
 			static const int INITIAL_LIFE_NUMBER = 2;
 
 			NextSequence mNextSequence;

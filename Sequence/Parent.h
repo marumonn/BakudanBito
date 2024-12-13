@@ -1,11 +1,11 @@
-#ifndef INCLUDED_SEQUENCE_PARENT_H
+﻿#ifndef INCLUDED_SEQUENCE_PARENT_H
 #define INCLUDED_SEQUENCE_PARENT_H
 
 namespace Sequence {
 	namespace Game {
 		class Parent;
 	}
-
+	//あとでポインタ変数が使えるように宣言
 	class Title;
 	class GameOver;
 	class Ending;
