@@ -40,7 +40,7 @@ namespace Sequence {
 		Parent();
 		~Parent();
 
-		NextSequence mNextSequence;
+		NextSequence mNextSequence; //次に行きたいシーケンス
 		Mode mMode;
 
 		Title* mTitle;
