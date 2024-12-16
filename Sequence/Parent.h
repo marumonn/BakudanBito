@@ -28,6 +28,7 @@ namespace Sequence {
 		};
 
 		void update();
+		//遷移したいシーケンスのEnumを引数に渡す
 		void moveTo(NextSequence);
 		Mode mode() const;
 		void setMode(Mode);
