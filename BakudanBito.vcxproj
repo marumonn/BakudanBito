@@ -158,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Clear.h" />
+    <ClInclude Include="File.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Sequence\Ending.h" />
     <ClInclude Include="Sequence\GameOver.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="Sequence\Game\Ready.h" />
     <ClInclude Include="Sequence\Parent.h" />
     <ClInclude Include="Sequence\Title.h" />
+    <ClInclude Include="State.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
