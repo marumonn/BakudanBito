@@ -157,7 +157,6 @@
     <ClCompile Include="Sequence\Title.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Clear.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Sequence\Ending.h" />
