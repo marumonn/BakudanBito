@@ -1,5 +1,25 @@
-// Play.cpp
-// Play.h ‚É‘Î‰‚·‚éƒ\[ƒXƒtƒ@ƒCƒ‹
+ï»¿#include "GameLib/GameLib.h"
+#include "GameLib/Framework.h"
+using namespace GameLib;
 
-#include "Play.h"
+#include "Sequence/Game/Play.h"
+#include "Sequence/Game/Parent.h"
+#include "State.h"
 
+namespace Sequence {
+	namespace Game {
+
+		Play::Play() {
+			//ä½•ã‚‚ã—ãªã„
+		}
+		Play::~Play() {
+			//ä½•ã‚‚ã—ãªã„
+		}
+
+		//ã‚²ãƒ¼ãƒ æœ¬ä½“
+		void Play::update(Parent* parent) {
+
+		}
+
+	}//namespace Game
+}//namespace Sequence
