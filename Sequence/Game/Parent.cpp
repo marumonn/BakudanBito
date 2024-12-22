@@ -118,7 +118,55 @@ namespace Sequence {
 				parent->moveTo(GrandParent::NEXT_TITLE);
 				break;
 			}
-			mNextSequence = NEXT_NONE;
+			mNextSequence = NEXT_NONE; //戻しておく
 		}
-	}
-}
+
+		void Parent::moveTo(NextSequence next) {
+			ASSERT(mNextSequence == NEXT_NONE);
+			mNextSequence = next;
+		}
+
+		State* Parent::state() {
+			return mState;
+		}
+
+		bool Parent::hasFinalStageCleared() const {
+			return (mStageID > FINAL_STAGE);
+		}
+
+		int Parent::lifeNumber() const {
+			return mLife;
+		}
+
+		//GrandParent::ModeをParent::mode()に変換。下流シーケンスにGrandParentを見せない
+
+		Parent::Mode Parent::mode() const {
+			Mode r = MODE_NONE;
+			switch (GrandParent::instance()->mode())
+			{
+			case GrandParent::MODE_1P: r = MODE_1P; break;
+			case GrandParent::MODE_2P: r = MODE_2P; break;
+			default: ASSERT(false); break;
+			}
+			
+			return r;
+		}
+
+		void Parent::startLoading() {
+			SAFE_DELETE(mState);
+			//ロードします
+			std::ostringstream oss;
+			if (mode() == MODE_1P) {
+				oss << "data/stageData/" << mStageID << ".txt";
+			}
+			else {
+				oss << "data/stageData/9.txt"; //２人用ステージの代わりに9面をロード
+			}
+			
+			File file(oss.str().c_str()); //これでconst char*が取れる
+			mState = new State(file.data(), file.size());
+		}
+
+
+	}//namespace Game
+}//namespace Sequence
