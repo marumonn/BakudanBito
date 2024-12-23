@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Array2D.h" />
+    <ClCompile Include="File.cpp" />
     <ClCompile Include="Sequence\Ending.cpp" />
     <ClCompile Include="Sequence\GameOver.cpp" />
     <ClCompile Include="Sequence\Game\Clear.cpp" />

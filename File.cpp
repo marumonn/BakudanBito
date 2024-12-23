@@ -32,6 +32,7 @@ const char* File::data() const {
 
 //unsigned取り出し
 unsigned File::getUnsigned(int p) const {
+	//charもunsigned charも 1バイト
 	const unsigned char* up;
 	up = reinterpret_cast<const unsigned char*>(mData);
 	unsigned r = up[p];
