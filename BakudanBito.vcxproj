@@ -152,7 +152,12 @@
     <ClCompile Include="Sequence\Game\Clear.cpp" />
     <ClCompile Include="Sequence\Game\Failure.cpp" />
     <ClCompile Include="Sequence\Game\Judge.cpp" />
-    <ClCompile Include="Sequence\Game\Parent.cpp" />
+    <ClCompile Include="Sequence\Game\Parent.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)\Parent2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)\Parent2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)\Parent2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)\Parent2.obj</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="Sequence\Game\Pause.cpp" />
     <ClCompile Include="Sequence\Game\Play.cpp" />
     <ClCompile Include="Sequence\Game\Ready.cpp" />
