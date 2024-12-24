@@ -35,6 +35,7 @@ unsigned File::getUnsigned(int p) const {
 	//charもunsigned charも 1バイト
 	const unsigned char* up;
 	up = reinterpret_cast<const unsigned char*>(mData);
+	//unsigned intのデータを取り出すために、unsigned charのデータを8bitずつ取り込む
 	unsigned r = up[p];
 	r |= up[p + 1] << 8;
 	r |= up[p + 2] << 16;
