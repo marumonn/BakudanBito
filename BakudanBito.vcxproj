@@ -145,6 +145,8 @@
   <ItemGroup>
     <ClCompile Include="Array2D.h" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="Image.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Sequence\Ending.cpp" />
     <ClCompile Include="Sequence\GameOver.cpp" />
     <ClCompile Include="Sequence\Game\Clear.cpp" />
@@ -156,6 +158,7 @@
     <ClCompile Include="Sequence\Game\Ready.cpp" />
     <ClCompile Include="Sequence\Parent.cpp" />
     <ClCompile Include="Sequence\Title.cpp" />
+    <ClCompile Include="State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="File.h" />
