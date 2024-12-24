@@ -56,7 +56,7 @@ namespace Sequence {
 			mEnding->update(this);
 		}
 		else {
-			HALT("ありえないシーケンス");
+			HALT("bakana");
 		}
 
 		//遷移判定

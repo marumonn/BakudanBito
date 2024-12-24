@@ -4,7 +4,6 @@ using namespace GameLib;
 #include "Sequence/Parent.h"
 
 //ユーザ実装関数。中身はmainLoop()に丸投げ
-
 namespace GameLib {
 	void Framework::update() {
 		if (!Sequence::Parent::instance()) {
@@ -12,7 +11,7 @@ namespace GameLib {
 			setFrameRate(60);
 		}
 		Sequence::Parent::instance()->update();
-		//終了判定( q が押されたか、マウスで×ボタンが押されたか
+		//終了判定(qが押されたか、マウスで×ボタンが叩かれたか)
 		if (isKeyOn('q')) {
 			requestEnd();
 		}
@@ -20,4 +19,6 @@ namespace GameLib {
 			Sequence::Parent::destroy();
 		}
 	}
-}//namespace GameLib
+}
+
+
