@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="Array2D.h" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="Game\StaticObject.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Sequence\Ending.cpp" />
@@ -163,10 +164,11 @@
     <ClCompile Include="Sequence\Game\Ready.cpp" />
     <ClCompile Include="Sequence\Parent.cpp" />
     <ClCompile Include="Sequence\Title.cpp" />
-    <ClCompile Include="State.cpp" />
+    <ClCompile Include="Game\State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="File.h" />
+    <ClInclude Include="Game\StaticObject.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Sequence\Ending.h" />
     <ClInclude Include="Sequence\GameOver.h" />
@@ -179,7 +181,7 @@
     <ClInclude Include="Sequence\Game\Ready.h" />
     <ClInclude Include="Sequence\Parent.h" />
     <ClInclude Include="Sequence\Title.h" />
-    <ClInclude Include="State.h" />
+    <ClInclude Include="Game\State.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
