@@ -35,15 +35,16 @@ namespace Sequence {
 				MODE_2P,
 				MODE_NONE,
 			};
-			Parent();
+			Parent(GrandParent::Mode);
 			~Parent();
 			void update(GrandParent*);
 			void moveTo(NextSequence);
 
 			State* state();
-			//const
-			//このメソッドが、このクラスのメンバを変更しないことを保証する
-			bool hasFinalStageCleared() const; //最終面クリアした？
+			//ゲーム描画
+			void drawState() const;
+			//最終面クリアした？
+			bool hasFinalStageCleared() const;
 			int lifeNumber() const;
 			Mode mode() const;
 			void startLoading();
