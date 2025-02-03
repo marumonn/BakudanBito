@@ -3,28 +3,32 @@
 
 #include "Array2D.h"
 
-class Image;
+class Image; //宣言だけしておけば、この型のポインタ変数が宣言できる
+class StaticObject;
+
 
 class State {
 public:
-	State(const char* stageData, int size);
+	//ステージ番号を与えてコンストラクトする。0だと２人用
+	static const int STAGE_ID_2PLAYERS = 0;
+	State(int stageID);
 	~State();
-	void update(int moveX, int moveY);
-	void draw() const;
+	//入力は中でとる
+	void update();
+	void draw() const; //描画によって内部状態は変わらない
+
+	//外からとる情報
 	bool hasCleared() const;
-	void reset(); //初期状態に戻す
-	static const int MAX_MOVE_COUNT = 15;
+	//1Pは生きてるか？
+	bool isAlive1P() const;
+	//2Pは生きてるか？
+	bool isAlive2P() const;
 
 private:
-	class Object;
-	void setSize();
+	//動かないオブジェクト
+	Array2D<StaticObject> mStaticObjects;
+	int mStageID;
 
-	int mWidth;
-	int mHeight;
-	Array2D<Object> mObjects;
 	Image* mImage; //画像
-	int mMoveCount;
-	char* mStageData;
-	int mStageDataSize;
 };
 #endif
