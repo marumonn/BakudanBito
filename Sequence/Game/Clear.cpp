@@ -5,7 +5,7 @@ using namespace GameLib;
 #include "Sequence/Game/Clear.h"
 #include "Sequence/Game/Parent.h"
 #include "Image.h"
-#include "State.h"
+#include "Game/State.h"
 
 namespace Sequence {
 	namespace Game {
