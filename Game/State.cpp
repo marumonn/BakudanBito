@@ -1,251 +1,140 @@
 ﻿#include "GameLib/Framework.h"
-using namespace GameLib;
 
-#include "State.h"
+#include "Game/State.h"
+#include "Game/StaticObject.h"
+
 #include "Image.h"
 
-//オブジェクトクラス
-class State::Object {
-public:
-	enum Type {
-		OBJ_SPACE,
-		OBJ_WALL,
-		OBJ_BLOCK,
-		OBJ_MAN,
+using namespace std;
+using namespace GameLib;
 
-		OBJ_UNKNOWN,
+namespace { //名前なし名前空間
+
+	//マップの広さ
+	const int WIDTH = 19;
+	const int HEIGHT = 15;
+
+	//適当なステージデータ
+	struct StageData {
+		int mEnemyNumber; //敵の数
+		int mBrickRate; //レンガの確率(％)
+		int mItemPowerNumber; //爆風アイテムの数
+		int mItemBombNumber; //爆弾アイテムの数
 	};
-	//マス描画関数
-	enum ImageID {
-		IMAGE_ID_PLAYER,
-		IMAGE_ID_WALL,
-		IMAGE_ID_BLOCK,
-		IMAGE_ID_GOAL,
-		IMAGE_ID_SPACE,
+
+	StageData gStageData[] = {
+		{2,90,4,6,},
+		{3,80,1,0,},
+		{6,30,0,1,},
 	};
-	Object() : mType(OBJ_WALL), mGoalFlag(false), mMoveX(0), mMoveY(0) {}
-	//ステージデータの文字で自分を初期化
-	void set(char c) {
-		switch (c) {
-		case '#': mType = OBJ_WALL; break;
-		case ' ': mType = OBJ_SPACE; break;
-		case 'o': mType = OBJ_BLOCK; break;
-		case 'O': mType = OBJ_BLOCK; mGoalFlag = true; break;
-		case '.': mType = OBJ_SPACE; mGoalFlag = true; break;
-		case 'p': mType = OBJ_MAN; break;
-		case 'P': mType = Object::OBJ_MAN; mGoalFlag = true; break;
-		}
-	}
-	//描画。背景描画
-	void drawBackground(int x, int y, const Image* image) const {
-		//壁なら壁
-		if (mType == OBJ_WALL) {
-			drawCell(x, y, IMAGE_ID_WALL, image);
-		}
-		else {
-			if (mGoalFlag) {
-				drawCell(x, y, IMAGE_ID_GOAL, image);
+} //名前なし名前空間
+
+State::State(int stageID) :
+	mImage(0),
+	mStageID(stageID) {
+	Framework f = Framework::instance(); //後で何度か使う、GetRandomなど
+	mStaticObjects.setSize(WIDTH, HEIGHT);
+
+	mImage = new Image("data/image/bakudanBitoImage.dds");
+
+	const StageData& stageData = gStageData[mStageID];
+	int n = HEIGHT * WIDTH; //マス目の総数
+
+	//レンガのブロックを記録
+	unsigned* brickList = new unsigned[n];
+	//本当にレンガになった数をカウント
+	int brickNumber = 0;
+
+	for (int y = 0; y < HEIGHT; ++y) {
+		for (int x = 0; x < WIDTH; ++x) {
+			StaticObject& o = mStaticObjects(x, y);
+			if (x == 0 || y == 0 || (x == WIDTH - 1) || (y == HEIGHT - 1)) {
+				//端っこは全部コンクリート
+				o.SetFlag(StaticObject::FLAG_WALL);
+			}
+			else if ((x % 2 == 0) && (y % 2 == 0)) {
+				//縦と横を一つ飛ばしでコンクリート
+				o.SetFlag(StaticObject::FLAG_WALL);
+			}
+			else if (y + x < 4) {
+				//左上3マスは床なので何もしない
+			}
+			else if ((mStageID == 0) && ((y + x) > (WIDTH + HEIGHT - 6))) {
+				//2人用なら、右下3マスも空けておく。よって何もしない
 			}
 			else {
-				drawCell(x, y, IMAGE_ID_SPACE, image);
-			}
-		}
-	}
-	void drawForeground(int x, int y, const Image* image, int moveCount) const {
-		//動くのは人と荷物だけ。
-		ImageID id = IMAGE_ID_SPACE; //前景がないフラグとして使う
-		if (mType == OBJ_BLOCK) {
-			id = IMAGE_ID_BLOCK;
-		}
-		else if (mType == OBJ_MAN) {
-			id = IMAGE_ID_PLAYER;
-		}
-		if (id != IMAGE_ID_SPACE) { //背景以外なら
-			const int m = State::MAX_MOVE_COUNT; //長いので別名
-			//移動を計算
-			int dx = (mMoveX * (m - moveCount) * 32) / m;
-			int dy = (mMoveY * (m - moveCount) * 32) / m;
-			image->draw(x * 32 - dx, y * 32 - dy, id * 32, 0, 32, 32);
-		}
-	}
-	static void drawCell(
-	int x,
-	int y,
-	int id,
-	const Image* image) {
-		image->draw(x * 32, y * 32, id * 32, 0, 32, 32);
-	}
-	//移動をセット。第3引数は置き換わるタイプ
-	void move(int dx, int dy, Type replaced) {
-		mMoveX = dx;
-		mMoveY = dy;
-		mType = replaced;
-	}
-	Type mType;
-	bool mGoalFlag;
-	int mMoveX;
-	int mMoveY;
-};
+				//残りはレンガか床である。100面サイコロを振って決める。
+				//床の場合は処理がいらないので、レンガのif文のみ。
 
-State::State(const char* stageData, int size) :
-	mImage(0),
-	mMoveCount(0),
-	mStageData(0),
-	mStageDataSize(size) {
-	//reset()に備えてステージデータをコピー
-	mStageData = new char[size + 1]; //0終端分
-	for (int i = 0; i < size; ++i) {
-		mStageData[i] = stageData[i];
-	}
-	mStageData[size] = '\0'; //NULL終端
-	//ステージ初期設定
-	reset();
-	//画像読み込み
-	mImage = new Image("data/image/nimotsuKunImage2.dds");
-}
+				if (f.getRandom(100) < stageData.mBrickRate) {
+					o.SetFlag(StaticObject::FLAG_BRICK);
 
-State::~State() {
-	SAFE_DELETE(mImage);
-	SAFE_DELETE_ARRAY(mStageData); //忘れるな
-}
-
-void State::reset() {
-	//サイズ測定
-	setSize();
-	//配列確保
-	mObjects.setSize(mWidth, mHeight);
-	//ステージ初期設定
-	int x = 0;
-	int y = 0;
-	for (int i = 0; i < mStageDataSize; ++i) {
-		Object t;
-		switch (mStageData[i]) {
-		case '#': case ' ': case 'o': case 'O':
-		case '.': case 'p': case 'P':
-			mObjects(x, y).set(mStageData[i]);
-			++x;
-			break;
-		case '\n': x = 0; ++y; break; //改行処理
-		}
-	}
-}
-
-void State::setSize() {
-	mWidth = mHeight = 0; //初期化
-	//現在位置
-	int x = 0;
-	int y = 0;
-	for (int i = 0; i < mStageDataSize; ++i) {
-		switch (mStageData[i]) {
-		case '#': case ' ': case 'o': case 'O':
-		case '.': case 'p': case 'P':
-			++x;
-			break;
-		case '\n':
-			++y;
-			//最大値更新
-			mWidth = (mWidth > x) ? mWidth : x;
-			mHeight = (mHeight > y) ? mHeight : y;
-			x = 0;
-			break;
-		}
-	}
-}
-
-void State::draw() const {
-	//二段階に分けて描画する。まず背景を描画。
-	for (int y = 0; y < mHeight; ++y) {
-		for (int x = 0; x < mWidth; ++x) {
-			mObjects(x, y).drawBackground(x, y, mImage);
-		}
-	}
-	//次に前景を描画
-	for (int y = 0; y < mHeight; ++y) {
-		for (int x = 0; x < mWidth; ++x) {
-			mObjects(x, y).drawForeground(x, y, mImage, mMoveCount);
-		}
-	}
-}
-
-void State::update(int dx, int dy) {
-	//移動中カウントがMAX_MOVE_COUNTに達したら
-	if (mMoveCount >= MAX_MOVE_COUNT) {
-		mMoveCount = 0; //巻き戻して、
-		//移動を初期化
-		for (int y = 0; y < mHeight; ++y) {
-			for (int x = 0; x < mWidth; ++x) {
-				mObjects(x, y).mMoveX = 0;
-				mObjects(x, y).mMoveY = 0;
-			}
-		}
-	}
-	//移動中は更新しない。
-	if (mMoveCount > 0) {
-		++mMoveCount;
-		return;
-	}
-	//短い変数名をつける。
-	int w = mWidth;
-	int h = mHeight;
-	Array2D< Object >& o = mObjects;
-	//人座標を検索
-	int x, y;
-	x = y = -1;
-	bool found = false;
-	for (y = 0; y < mHeight; ++y) {
-		for (x = 0; x < mWidth; ++x) {
-			if (o(x, y).mType == Object::OBJ_MAN) {
-				found = true;
-				break;
-			}
-		}
-		if (found) {
-			break;
-		}
-	}
-	//移動
-	//移動後座標
-	int tx = x + dx;
-	int ty = y + dy;
-	//座標の最大最小チェック。外れていれば不許可
-	if (tx < 0 || ty < 0 || tx >= w || ty >= h) {
-		return;
-	}
-	//A.その方向が空白またはゴール。人が移動。
-	if (o(tx, ty).mType == Object::OBJ_SPACE) {
-		o(tx, ty).move(dx, dy, Object::OBJ_MAN);
-		o(x, y).move(dx, dy, Object::OBJ_SPACE);
-		mMoveCount = 1; //移動開始
-		//B.その方向が箱。その方向の次のマスが空白またはゴールであれば移動。
-	}
-	else if (o(tx, ty).mType == Object::OBJ_BLOCK) {
-		//2マス先が範囲内かチェック
-		int tx2 = tx + dx;
-		int ty2 = ty + dy;
-		if (tx2 < 0 || ty2 < 0 || tx2 >= w || ty2 >= h) { //押せない
-			return;
-		}
-		if (o(tx2, ty2).mType == Object::OBJ_SPACE) {
-			//順次入れ替え
-			o(tx2, ty2).move(dx, dy, Object::OBJ_BLOCK);
-			o(tx, ty).move(dx, dy, Object::OBJ_MAN);
-			o(x, y).move(dx, dy, Object::OBJ_SPACE);
-			mMoveCount = 1; //移動開始
-		}
-	}
-}
-
-//ブロックのところのgoalFlagが一つでもfalseなら
-//まだクリアしてない
-bool State::hasCleared() const {
-	for (int y = 0; y < mHeight; ++y) {
-		for (int x = 0; x < mWidth; ++x) {
-			if (mObjects(x, y).mType == Object::OBJ_BLOCK) {
-				if (mObjects(x, y).mGoalFlag == false) {
-					return false;
+					//レンガだったら記録しておく。
+					brickList[brickNumber] = (x << 16) + y;//xとyの構造体を作るのは面倒なので、xとyを同時に記録できる方法を採用。32bitの変数を16ビットずつ使ってxとyを同時に記録している。
+					++brickNumber;
 				}
 			}
 		}
 	}
+
+	//レンガにアイテムを仕込む。
+	int powerNumber = stageData.mItemPowerNumber;
+	int bombNumber = stageData.mItemBombNumber;
+
+	//方法は、レンガリストの i 番目を適当なものと取り替えて、そこにアイテムを入れる。
+	for (int i = 0; i < powerNumber + bombNumber; ++i) {
+		int swapped = f.getRandom(brickNumber - 1 - i) + i;//自分か、自分より後ろと取り替える。こうしないと、既に入れたマスにもう一度アイテムを入れてしまう場合がある。
+		
+		//交換処理
+		unsigned tmp = brickList[i];
+		brickList[i] = brickList[swapped];
+		brickList[swapped] = tmp;
+
+		//x座標とy座標記録時に、1つの変数に16bitずつ記録していたので、それのperse
+		int x = brickList[i] >> 16; //上位16ビットを取り出す
+		int y = brickList[i] & 0xffff; //下位16ビットを取り出す
+
+		StaticObject& o = mStaticObjects(x, y);
+		if (i < powerNumber) {
+			o.SetFlag(StaticObject::FLAG_ITEM_POWER);
+		}
+		else {
+			o.SetFlag(StaticObject::FLAG_ITEM_BOMB);
+		}
+	}
+	SAFE_DELETE_ARRAY(brickList);
+}
+
+State::~State() {
+	SAFE_DELETE(mImage);
+}
+
+void State::draw() const {
+	//背景描画
+	for (int y = 0; y < HEIGHT; ++y) {
+		for (int x = 0; x < WIDTH; ++x) {
+			mStaticObjects(x, y).draw(x, y, mImage); //staticObjectクラスは座標情報を持たないので、描画時に座標を渡す
+		}
+	}
+	//TODO:前景描画
+	//TODO:爆風描画
+}
+
+void State::update() {
+	//TODO:
+}
+
+bool State::hasCleared() const {
+	//TODO:
+	return false;
+}
+
+bool State::isAlive1P() const {
+	//TODO:
+	return true;
+}
+
+bool State::isAlive2P() const {
+	//TODO:
 	return true;
 }
