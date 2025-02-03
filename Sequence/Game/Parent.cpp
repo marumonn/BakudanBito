@@ -7,15 +7,15 @@
 #include "Sequence/Game/Play.h"
 #include "Sequence/Game/Failure.h"
 #include "Sequence/Game/Judge.h"
-#include "State.h"
+#include "Game/State.h"
 #include "File.h"
 #include <sstream>
 
 namespace Sequence {
 	namespace Game {
-		Parent::Parent() :
+		Parent::Parent(GrandParent::Mode mode) :
 			mState(0),
-			mStageID(1), //最初は1面
+			mStageID(0),
 			mLife(INITIAL_LIFE_NUMBER),
 			mNextSequence(NEXT_NONE),
 			mClear(0),
@@ -24,6 +24,13 @@ namespace Sequence {
 			mPlay(0),
 			mFailure(0),
 			mJudge(0) {
+
+			if (mode == GrandParent::MODE_1P) {
+				mStageID = 1;
+			}
+			else {
+				mStageID = 0;
+			}
 			//最初はReady
 			mReady = new Ready();
 		}
@@ -154,19 +161,12 @@ namespace Sequence {
 
 		void Parent::startLoading() {
 			SAFE_DELETE(mState);
-			//ロードします
-			std::ostringstream oss;
-			if (mode() == MODE_1P) {
-				oss << "data/stageData/" << mStageID << ".txt";
-			}
-			else {
-				oss << "data/stageData/9.txt"; //２人用ステージの代わりに9面をロード
-			}
-			
-			File file(oss.str().c_str()); //これでconst char*が取れる
-			mState = new State(file.data(), file.size());
+			mState = new State(mStageID);
 		}
 
+		void Parent::drawState() const{
+			mState->draw();
+		}
 
 	}//namespace Game
 }//namespace Sequence
