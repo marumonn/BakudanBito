@@ -4,7 +4,7 @@ using namespace GameLib;
 
 #include "Sequence/Game/Play.h"
 #include "Sequence/Game/Parent.h"
-#include "State.h"
+#include "Game/State.h"
 
 namespace Sequence {
 	namespace Game {
@@ -77,7 +77,7 @@ namespace Sequence {
 			}
 
 			//更新
-			state->update(dx, dy);
+			state->update();
 			//描画
 			state->draw();
 		}
