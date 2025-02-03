@@ -75,7 +75,7 @@ namespace Sequence {
 		case NEXT_GAME:
 			ASSERT(mTitle && !mGameOver && !mGame && !mEnding);
 			SAFE_DELETE(mTitle);
-			mGame = new Game::Parent();
+			mGame = new Game::Parent(mMode);
 			break;
 		case NEXt_GAME_OVER:
 			ASSERT(mGame && !mGameOver && !mEnding && !mTitle);
