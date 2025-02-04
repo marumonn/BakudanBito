@@ -9,6 +9,7 @@ using namespace GameLib;
 namespace {
 	//適当パラメータ群
 	//速度。単位は (内部単位 / フレーム)
+	// 1画素 = 1000 なので、1フレームで1画素(敵は0.5画素)動いていることになる
 	const int PLAYER_SPEED = 1000;
 	const int ENEMY_SPEED = 500;
 } //namespace
@@ -100,6 +101,7 @@ void DynamicObject::update() {
 		mY += dy * PLAYER_SPEED;
 	}
 	else if (mType == TYPE_2P) {
+		//2Pの挙動
 		int dx, dy;
 		dx = dy = 0;
 		if (f.isKeyOn('i')) {
@@ -117,4 +119,39 @@ void DynamicObject::update() {
 		mX += dx * PLAYER_SPEED;
 		mY += dy * PLAYER_SPEED;
 	}
+	//限界処理
+	const int X_MIN = 8000; //マス目座標でいうと、0にあたる
+	const int X_MAX = 320 * 1000 - 8000; //左から数えて320画素 (20マスの右端) から0.5マス引いている
+	const int Y_MIN = 8000;
+	const int Y_MAX = 240 * 1000 - 8000;
+	bool hit = false;
+	if (mX < X_MIN) {
+		mX = X_MIN;
+		hit = true;
+	}
+	else if (mX > X_MAX) {
+		mX = X_MAX;
+		hit = true;
+	}
+	else if (mY < Y_MIN) {
+		mY = Y_MIN;
+		hit = true;
+	}
+	else if (mY > Y_MAX) {
+		mY = Y_MAX;
+		hit = true;
+	}
+
+	//敵ならランダムに向きを変える
+	if (hit && mType == TYPE_ENEMY) {
+		mDirectionX = mDirectionY = 0;
+		switch (f.getRandom(4))
+		{
+		case 0: mDirectionX = 1; break;
+		case 1: mDirectionX = -1; break;
+		case 2: mDirectionY = 1; break;
+		case 3: mDirectionY = -1; break;
+		}
+	}
+
 }
