@@ -2,6 +2,7 @@
 
 #include "Game/State.h"
 #include "Game/StaticObject.h"
+#include "Game/DynamicObject.h"
 
 #include "Image.h"
 
@@ -31,11 +32,13 @@ namespace { //名前なし名前空間
 
 State::State(int stageID) :
 	mImage(0),
+	mDynamicObjects(0),
+	mDynamicObjectNumber(0),
 	mStageID(stageID) {
 	Framework f = Framework::instance(); //後で何度か使う、GetRandomなど
 	mStaticObjects.setSize(WIDTH, HEIGHT);
 
-	mImage = new Image("data/image/bakudanBitoImage.dds");
+	mImage = new Image("data/image/bakudanBitoImage.dds"); //全部が入っている画像を切り出して利用する
 
 	const StageData& stageData = gStageData[mStageID];
 	int n = HEIGHT * WIDTH; //マス目の総数
@@ -44,6 +47,9 @@ State::State(int stageID) :
 	unsigned* brickList = new unsigned[n];
 	//本当にレンガになった数をカウント
 	int brickNumber = 0;
+	//床も記録する
+	unsigned* floorList = new unsigned[n];
+	int floorNumber = 0;
 
 	for (int y = 0; y < HEIGHT; ++y) {
 		for (int x = 0; x < WIDTH; ++x) {
@@ -72,6 +78,11 @@ State::State(int stageID) :
 					//レンガだったら記録しておく。
 					brickList[brickNumber] = (x << 16) + y;//xとyの構造体を作るのは面倒なので、xとyを同時に記録できる方法を採用。32bitの変数を16ビットずつ使ってxとyを同時に記録している。
 					++brickNumber;
+				}
+				else {
+					//プレイヤー周辺の3マス以外の床を記録して保持
+					floorList[floorNumber] = (x << 16) + y;
+					++floorNumber;
 				}
 			}
 		}
@@ -103,10 +114,40 @@ State::State(int stageID) :
 		}
 	}
 	SAFE_DELETE_ARRAY(brickList);
+
+	//動的オブジェクトを確保
+	int playerNumber = (mStageID == 0) ? 2 : 1;
+	int enemyNumber = stageData.mEnemyNumber;
+	mDynamicObjectNumber = playerNumber + enemyNumber;
+	mDynamicObjects = new DynamicObject[mDynamicObjectNumber];
+
+	//プレイヤー配置。位置はゲーム開始時はいつも同じ
+	mDynamicObjects[0].set(1, 1, DynamicObject::TYPE_1P);
+	if (mStageID == 0) {
+		//2Pもいる場合
+		mDynamicObjects[1].set(WIDTH - 2, HEIGHT - 2, DynamicObject::TYPE_2P);
+	}
+
+	//床に敵を仕込む。やり方はアイテムとほとんど同じ。
+	for (int i = 0; i < enemyNumber; ++i) {
+		int swapped = f.getRandom(floorNumber - 1 - i) + i;
+
+		//入れ替え
+		unsigned tmp = floorList[i];
+		floorList[i] = floorList[swapped];
+		floorList[swapped] = tmp;
+
+		int x = floorList[i] >> 16;
+		int y = floorList[i] & 0xffff;
+		//プレイヤーはすでに初期化している前提
+		mDynamicObjects[playerNumber + i].set(x, y, DynamicObject::TYPE_ENEMY);
+	}
+	SAFE_DELETE_ARRAY(floorList);
 }
 
 State::~State() {
 	SAFE_DELETE(mImage);
+	SAFE_DELETE_ARRAY(mDynamicObjects);
 }
 
 void State::draw() const {
@@ -116,7 +157,10 @@ void State::draw() const {
 			mStaticObjects(x, y).draw(x, y, mImage); //staticObjectクラスは座標情報を持たないので、描画時に座標を渡す
 		}
 	}
-	//TODO:前景描画
+	//前景描画
+	for (int i = 0; i < mDynamicObjectNumber; ++i) {
+		mDynamicObjects[i].draw(mImage);
+	}
 	//TODO:爆風描画
 }
 
