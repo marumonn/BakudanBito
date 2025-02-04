@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="Array2D.h" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="Game\DynamicObject.cpp" />
     <ClCompile Include="Game\StaticObject.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="main.cpp" />
@@ -168,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="File.h" />
+    <ClInclude Include="Game\DynamicObject.h" />
     <ClInclude Include="Game\StaticObject.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Sequence\Ending.h" />
