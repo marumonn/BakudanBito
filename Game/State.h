@@ -5,6 +5,7 @@
 
 class Image; //宣言だけしておけば、この型のポインタ変数が宣言できる
 class StaticObject;
+class DynamicObject;
 
 
 class State {
@@ -27,6 +28,10 @@ public:
 private:
 	//動かないオブジェクト
 	Array2D<StaticObject> mStaticObjects;
+	//動くオブジェクト
+	DynamicObject* mDynamicObjects;
+	int mDynamicObjectNumber;
+
 	int mStageID;
 
 	Image* mImage; //画像
