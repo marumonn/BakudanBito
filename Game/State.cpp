@@ -165,7 +165,10 @@ void State::draw() const {
 }
 
 void State::update() {
-	//TODO:
+	//とりあえずDynamicObjectそれぞれに移動処理
+	for (int i = 0; i < mDynamicObjectNumber; ++i) {
+		mDynamicObjects[i].update();
+	}
 }
 
 bool State::hasCleared() const {
