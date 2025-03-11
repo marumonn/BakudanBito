@@ -35,11 +35,18 @@ namespace Sequence {
 				MODE_2P,
 				MODE_NONE,
 			};
+			enum PlayerID {
+				PLAYER_1,
+				PLAYER_2,
+				PLAYER_NONE
+			};
 			Parent(GrandParent::Mode);
 			~Parent();
 			void update(GrandParent*);
 			void moveTo(NextSequence);
 
+			PlayerID winner() const;
+			void setWinner(PlayerID);
 			State* state();
 			//ゲーム描画
 			void drawState() const;
@@ -52,6 +59,7 @@ namespace Sequence {
 			State* mState;
 			int mStageID;
 			int mLife;
+			PlayerID mWinner; //勝ったらこれに入る
 			static const int FINAL_STAGE = 2; //今は2面が最終面
 			static const int INITIAL_LIFE_NUMBER = 2;
 
