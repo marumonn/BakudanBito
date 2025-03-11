@@ -20,16 +20,18 @@ public:
 
 	//外からとる情報
 	bool hasCleared() const;
-	//1Pは生きてるか？
-	bool isAlive1P() const;
-	//2Pは生きてるか？
-	bool isAlive2P() const;
+	//プレイヤーは生きてるか？
+	bool isAlive(int playerID) const;
 
 private:
+	//炎設置。座標は爆弾の座標
+	void setFire(int x, int y);
+
 	//動かないオブジェクト
 	Array2D<StaticObject> mStaticObjects;
 	//動くオブジェクト
 	DynamicObject* mDynamicObjects;
+	//動くオブジェクトの個数
 	int mDynamicObjectNumber;
 
 	int mStageID;
