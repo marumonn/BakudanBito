@@ -2,6 +2,7 @@
 #define INCLUDED_GAME_DYNAMIC_OBJECT_H
 
 class Image;
+class StaticObject;
 
 class DynamicObject {
 public:
@@ -23,7 +24,7 @@ public:
 	//移動
 	void move(const int* wallsX, int* wallsY, int wallNumber);
 
-	//どこのマスに中心があるのか尋ねる
+	//どこのマスに中心があるのか尋ねる。2つの変数を返したいが、配列は定義したくないので、引数にポインタをとっている
 	void getCell(int* x, int* y) const;
 
 	//dx , dyだけ移動した際に重なっているマス座標を配列に入れて返す
