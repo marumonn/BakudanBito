@@ -168,5 +168,13 @@ namespace Sequence {
 			mState->draw();
 		}
 
+		Parent::PlayerID Parent::winner() const {
+			return mWinner;
+		}
+
+		void Parent::setWinner(PlayerID id) {
+			mWinner = id;
+		}
+
 	}//namespace Game
 }//namespace Sequence
