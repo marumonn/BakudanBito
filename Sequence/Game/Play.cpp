@@ -23,8 +23,8 @@ namespace Sequence {
 			State* state = parent->state();
 
 			bool cleared = state->hasCleared();
-			bool die1P = false;
-			bool die2P = false;
+			bool die1P = !state->isAlive(0);
+			bool die2P = !state->isAlive(1);
 			//とりあえずデバッグコマンドでテストする。
 			if (f.isKeyTriggered('1')) {
 				//1Pが殺す、つまり2Pが死ぬ
@@ -54,26 +54,21 @@ namespace Sequence {
 			}
 			else {
 				//二人用
-				if (die1P || die2P) {
-					//どっちかが死んでたら勝敗判定
+				if (die1P || die2P) { //どっちかが死んでたら勝敗判定
 					parent->moveTo(Parent::NEXT_JUDGE);
+					if (die1P && die2P) {
+						parent->setWinner(Parent::PLAYER_NONE); //両方死亡
+					}
+					else if (die1P) {
+						parent->setWinner(Parent::PLAYER_2);
+					}
+					else {
+						parent->setWinner(Parent::PLAYER_1);
+					}
 				}
 			}
-
-			//更新
-			int dx = 0;
-			int dy = 0;
-			if (f.isKeyOn('a')) {
-				dx -= 1;
-			}
-			else if (f.isKeyOn('s')) {
-				dx += 1;
-			}
-			else if (f.isKeyOn('w')) {
-				dy -= 1;
-			}
-			else if (f.isKeyOn('z')) {
-				dy += 1;
+			if (f.isKeyTriggered(' ')) {
+				parent->moveTo(Parent::NEXT_PAUSE);
 			}
 
 			//更新
