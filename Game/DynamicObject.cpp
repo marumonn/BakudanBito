@@ -285,6 +285,11 @@ bool DynamicObject::hasBombButtonPressed() const {
 	return false;
 }
 
+void DynamicObject::getCell(int* x, int* y) const {
+	*x = mX / 16000;
+	*y = mY / 16000;
+}
+
 bool DynamicObject::isPlayer() const {
 	return (mType == TYPE_PLAYER);
 }
